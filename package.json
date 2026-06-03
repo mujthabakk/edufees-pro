@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "next build && gh-pages -d out -t true"
+    "deploy": "next build && gh-pages -d out --dotfiles --nojekyll"
   },
   "dependencies": {
     "@prisma/client": "^7.8.0",
