@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[4565,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js","/edufees-pro/_next/static/chunks/3eg4sxmj3jmns.js","/edufees-pro/_next/static/chunks/0yahbgukh9c9h.js"],"Sidebar"]
+3:I[39756,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+4:I[37457,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+0:{"rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/edufees-pro/_next/static/chunks/3eg4sxmj3jmns.js","async":true}],["$","script","script-1",{"src":"/edufees-pro/_next/static/chunks/0yahbgukh9c9h.js","async":true}]],["$","div",null,{"className":"flex h-full","children":[["$","$L2",null,{}],["$","div",null,{"className":"flex-1 ml-64 flex flex-col min-h-screen","children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]}]]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"u5pd0QB9GGKJygzWImC1a"}

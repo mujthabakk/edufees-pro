@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[35384,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js","/edufees-pro/_next/static/chunks/19fiufm3488ss.js"],"ParentNav"]
+3:I[39756,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+4:I[37457,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+0:{"rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/edufees-pro/_next/static/chunks/19fiufm3488ss.js","async":true}]],["$","div",null,{"className":"min-h-screen bg-gray-50","children":[["$","$L2",null,{}],["$","div",null,{"className":"max-w-5xl mx-auto","children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]}]]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"u5pd0QB9GGKJygzWImC1a"}

@@ -1,0 +1,6 @@
+1:"$Sreact.fragment"
+2:I[69023,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js","/edufees-pro/_next/static/chunks/1eusy3ktj2ks6.js","/edufees-pro/_next/static/chunks/0yahbgukh9c9h.js","/edufees-pro/_next/static/chunks/3qis-ta1cyrz8.js","/edufees-pro/_next/static/chunks/07_h6is7yg4ul.js"],"SchoolsDetailPage"]
+3:I[97367,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"OutletBoundary"]
+4:"$Sreact.suspense"
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],[["$","script","script-0",{"src":"/edufees-pro/_next/static/chunks/3qis-ta1cyrz8.js","async":true}],["$","script","script-1",{"src":"/edufees-pro/_next/static/chunks/07_h6is7yg4ul.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"u5pd0QB9GGKJygzWImC1a"}
+5:null
