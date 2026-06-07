@@ -8,11 +8,11 @@ import { AlertTriangle, CheckCircle, Info, Megaphone, Send, X, Bell } from "luci
 type Notif = { id: number; type: string; title: string; body: string; time: string; read: boolean };
 
 const initialNotifs: Notif[] = [
-  { id: 1, type: "alert", title: "School subscription expiring soon", body: "Vidya Vihar CBSE subscription expires in 3 days. Action required.", time: "2 hours ago", read: false },
-  { id: 2, type: "info", title: "New school onboarded", body: "Ryan International Bangalore joined on the Growth plan.", time: "Yesterday", read: false },
+  { id: 1, type: "alert", title: "Institute subscription expiring soon", body: "Vidya Vihar CBSE subscription expires in 3 days. Action required.", time: "2 hours ago", read: false },
+  { id: 2, type: "info", title: "New institute onboarded", body: "Ryan International Bangalore joined on the Growth plan.", time: "Yesterday", read: false },
   { id: 3, type: "success", title: "Payment gateway configured", body: "Delhi Modern School successfully integrated Razorpay.", time: "2 days ago", read: true },
   { id: 4, type: "alert", title: "5 failed login attempts detected", body: "Account vidyavihar@gmail.com has been temporarily locked.", time: "3 days ago", read: true },
-  { id: 5, type: "info", title: "Monthly backup completed", body: "All school data backed up. 63 schools, 2,820 users.", time: "4 days ago", read: true },
+  { id: 5, type: "info", title: "Monthly backup completed", body: "All institute data backed up. 63 institutes, 2,820 users.", time: "4 days ago", read: true },
 ];
 
 const iconMap: Record<string, React.ReactElement> = {
@@ -27,7 +27,7 @@ export function NotificationsPage() {
   const [toast, setToast] = useState("");
 
   // Broadcast form
-  const [audience, setAudience] = useState("All Schools");
+  const [audience, setAudience] = useState("All Institutes");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [type, setType] = useState("Info");
@@ -125,11 +125,11 @@ export function NotificationsPage() {
                 <div>
                   <label className="text-xs text-gray-500 font-medium">Target Audience</label>
                   <select value={audience} onChange={e => setAudience(e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                    <option>All Schools</option>
+                    <option>All Institutes</option>
                     <option>Enterprise Plan Only</option>
                     <option>Growth Plan Only</option>
                     <option>Starter Plan Only</option>
-                    <option>All School Admins</option>
+                    <option>All Institute Admins</option>
                     <option>Free Plan (Upgrade Prompt)</option>
                   </select>
                 </div>

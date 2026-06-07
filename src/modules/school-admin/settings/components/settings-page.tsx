@@ -8,7 +8,7 @@ import { Badge } from "@/modules/shared/ui/badge";
 import { School, CreditCard, Bell, Users, Shield, Palette, Save } from "lucide-react";
 
 const SECTIONS = [
-  { id: "school", label: "School Profile", icon: School },
+  { id: "school", label: "Institute Profile", icon: School },
   { id: "payment", label: "Payment Gateway", icon: CreditCard },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "users", label: "Users & Roles", icon: Users },
@@ -16,7 +16,7 @@ const SECTIONS = [
 ];
 
 const mockUsers = [
-  { id: "1", name: "School Admin", email: "admin@greenfield.edu", role: "SCHOOL_ADMIN", isActive: true },
+  { id: "1", name: "Institute Admin", email: "admin@greenfield.edu", role: "INSTITUTE_ADMIN", isActive: true },
   { id: "2", name: "Ravi Accountant", email: "ravi@greenfield.edu", role: "ACCOUNTANT", isActive: true },
   { id: "3", name: "Priya Teacher", email: "priya.teacher@greenfield.edu", role: "TEACHER", isActive: true },
   { id: "4", name: "Suresh Accounts", email: "suresh@greenfield.edu", role: "ACCOUNTANT", isActive: false },
@@ -24,10 +24,13 @@ const mockUsers = [
 
 export function SettingsPage() {
   const [activeSection, setActiveSection] = useState("school");
+  const [toast, setToast] = useState("");
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
   return (
     <div className="flex flex-col flex-1">
-      <Topbar title="Settings" subtitle="Manage school configuration" />
+      {toast && <div className="fixed top-5 right-5 z-[999] bg-gray-900 text-white text-sm px-4 py-3 rounded-xl shadow-xl">{toast}</div>}
+      <Topbar title="Settings" subtitle="Manage institute configuration · Greenfield Institute" />
       <main className="flex-1 p-6">
         <div className="flex gap-6">
           {/* Sidebar Nav */}
@@ -49,20 +52,20 @@ export function SettingsPage() {
 
             {activeSection === "school" && (
               <Card>
-                <CardHeader><CardTitle>School Profile</CardTitle></CardHeader>
+                <CardHeader><CardTitle>Institute Profile</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
                     <div className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center text-3xl">🏫</div>
                     <div>
-                      <p className="font-semibold text-gray-900">Greenfield Academy</p>
+                      <p className="font-semibold text-gray-900">Greenfield Institute</p>
                       <p className="text-sm text-gray-500">greenfield.edufees.pro</p>
                       <Button variant="outline" size="sm" className="mt-2">Change Logo</Button>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     {[
-                      { label: "School Name", value: "Greenfield Academy" },
-                      { label: "School Type", value: "SECONDARY" },
+                      { label: "Institute Name", value: "Greenfield Institute" },
+                      { label: "Institute Type", value: "SECONDARY" },
                       { label: "Primary Email", value: "contact@greenfield.edu" },
                       { label: "Primary Phone", value: "+91 98765 43210" },
                       { label: "City", value: "Bangalore" },
@@ -77,7 +80,7 @@ export function SettingsPage() {
                     ))}
                   </div>
                   <div className="pt-2">
-                    <Button><Save className="w-4 h-4" />Save Changes</Button>
+                    <Button onClick={() => showToast("✅ Institute profile saved successfully")}><Save className="w-4 h-4" />Save Changes</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -111,7 +114,7 @@ export function SettingsPage() {
                     <label className="block text-xs font-medium text-gray-700 mb-1.5">UPI ID</label>
                     <input defaultValue="greenfield@razorpay" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                   </div>
-                  <Button><Save className="w-4 h-4" />Save Gateway Settings</Button>
+                  <Button onClick={() => showToast("✅ Payment gateway settings saved")}><Save className="w-4 h-4" />Save Gateway Settings</Button>
                 </CardContent>
               </Card>
             )}
@@ -120,7 +123,7 @@ export function SettingsPage() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                   <CardTitle>Users & Access Control</CardTitle>
-                  <Button size="sm"><Users className="w-4 h-4" />Invite User</Button>
+                  <Button size="sm" onClick={() => showToast("📧 Invitation sent to new user")}><Users className="w-4 h-4" />Invite User</Button>
                 </CardHeader>
                 <CardContent className="p-0">
                   <table className="w-full">
@@ -144,7 +147,7 @@ export function SettingsPage() {
                           </td>
                           <td className="px-5 py-3.5 text-sm text-gray-500">{user.email}</td>
                           <td className="px-5 py-3.5">
-                            <Badge variant={user.role === "SCHOOL_ADMIN" ? "info" : user.role === "ACCOUNTANT" ? "success" : "default"}>
+                            <Badge variant={user.role === "INSTITUTE_ADMIN" ? "info" : user.role === "ACCOUNTANT" ? "success" : "default"}>
                               {user.role.replace(/_/g, " ")}
                             </Badge>
                           </td>
@@ -189,7 +192,7 @@ export function SettingsPage() {
                       </div>
                     </div>
                   ))}
-                  <Button><Save className="w-4 h-4" />Save Preferences</Button>
+                  <Button onClick={() => showToast("✅ Notification preferences saved")}><Save className="w-4 h-4" />Save Preferences</Button>
                 </CardContent>
               </Card>
             )}
@@ -206,7 +209,7 @@ export function SettingsPage() {
                         <input type="password" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                       </div>
                     ))}
-                    <Button><Shield className="w-4 h-4" />Update Password</Button>
+                    <Button onClick={() => showToast("✅ Password updated successfully")}><Shield className="w-4 h-4" />Update Password</Button>
                   </div>
                   <div className="border-t border-gray-100 pt-5 space-y-3">
                     <p className="text-sm font-medium text-gray-900">Session & Login</p>

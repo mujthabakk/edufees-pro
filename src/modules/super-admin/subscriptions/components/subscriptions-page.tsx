@@ -129,7 +129,7 @@ export function SubscriptionsPage() {
             <p className="text-purple-200 text-xs mt-1 flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" />+12% vs last month</p>
           </Card>
           <Card className="p-5">
-            <p className="text-gray-400 text-xs">Paying Schools</p>
+            <p className="text-gray-400 text-xs">Paying Institutes</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{subs.filter(s => s.plan !== "Free" && s.status === "Active").length}</p>
             <p className="text-xs text-gray-500">{subs.filter(s => s.plan === "Free").length} on free plan</p>
           </Card>
@@ -168,7 +168,7 @@ export function SubscriptionsPage() {
                       <button onClick={() => setConfirmDeletePlan(p)} className="p-1.5 text-gray-400 hover:text-red-500 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 mb-3">Up to <strong>{p.maxStudents >= 999999 ? "Unlimited" : p.maxStudents.toLocaleString()}</strong> students · <strong>{subs.filter(s => s.plan === p.name).length}</strong> schools on this plan</p>
+                  <p className="text-xs text-gray-500 mb-3">Up to <strong>{p.maxStudents >= 999999 ? "Unlimited" : p.maxStudents.toLocaleString()}</strong> students · <strong>{subs.filter(s => s.plan === p.name).length}</strong> institutes on this plan</p>
                   <ul className="space-y-1.5">
                     {p.features.map(f => (
                       <li key={f} className="text-xs text-gray-600 flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-green-500 shrink-0" />{f}</li>
@@ -196,7 +196,7 @@ export function SubscriptionsPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-100 bg-gray-50/50">
-                      {["School", "Plan", "MRR", "Seats", "Renewal", "Status", "Actions"].map(h => (
+                      {["Institute", "Plan", "MRR", "Seats", "Renewal", "Status", "Actions"].map(h => (
                         <th key={h} className="text-left text-xs font-semibold text-gray-500 px-4 py-3 uppercase">{h}</th>
                       ))}
                     </tr>
@@ -247,7 +247,7 @@ export function SubscriptionsPage() {
               </CardContent>
             </Card>
             <Card>
-              <CardHeader><CardTitle>Schools by Plan</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Institutes by Plan</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={220}>
                   <PieChart>
@@ -332,7 +332,7 @@ export function SubscriptionsPage() {
               </div>
               <div className="space-y-3">
                 <div>
-                  <label className="text-xs text-gray-500 font-medium">School Name *</label>
+                  <label className="text-xs text-gray-500 font-medium">Institute Name *</label>
                   <input value={subForm.school} onChange={e => setSubForm(f => ({ ...f, school: e.target.value }))}
                     className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g. Ryan International" />
                 </div>
@@ -442,7 +442,7 @@ export function SubscriptionsPage() {
                   <h3 className="font-bold text-gray-900">Delete "{confirmDeletePlan.name}" Plan?</h3>
                   <p className="text-sm text-gray-500 mt-1">
                     {subs.filter(s => s.plan === confirmDeletePlan.name).length > 0
-                      ? `⚠️ ${subs.filter(s => s.plan === confirmDeletePlan.name).length} school(s) are on this plan. Move them first.`
+                      ? `⚠️ ${subs.filter(s => s.plan === confirmDeletePlan.name).length} institute(s) are on this plan. Move them first.`
                       : "This plan has no active subscribers and can be safely deleted."}
                   </p>
                 </div>

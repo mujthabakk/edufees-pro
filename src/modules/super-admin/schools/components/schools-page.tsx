@@ -32,7 +32,7 @@ const planColors: Record<string, string> = {
 };
 
 const PLANS = ["Free", "Starter", "Growth", "Enterprise"];
-const WIZARD_STEPS = ["School Info", "Admin User", "Select Plan", "Confirm"];
+const WIZARD_STEPS = ["Institute Info", "Admin User", "Select Plan", "Confirm"];
 
 const emptyForm = { name: "", city: "", state: "", address: "", phone: "", adminName: "", adminEmail: "", adminMobile: "", plan: "Starter" };
 
@@ -83,7 +83,7 @@ export function SchoolsPage() {
   const handleEditSave = () => {
     setSchools(prev => prev.map(s => s.id === editSchool!.id ? { ...s, ...editForm } : s));
     setEditSchool(null);
-    showToast("✅ School details updated successfully");
+    showToast("✅ Institute details updated successfully");
   };
 
   // Suspend / Activate
@@ -101,7 +101,7 @@ export function SchoolsPage() {
 
   return (
     <div className="flex flex-col flex-1">
-      <Topbar title="Schools" subtitle="Manage all onboarded schools" />
+      <Topbar title="Institutes" subtitle="Manage all onboarded institutes" />
       <main className="flex-1 p-6 space-y-5">
 
         {/* Toast */}
@@ -114,7 +114,7 @@ export function SchoolsPage() {
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: "Total Schools", value: schools.length, color: "text-gray-900" },
+            { label: "Total Institutes", value: schools.length, color: "text-gray-900" },
             { label: "Active", value: schools.filter(s => s.status === "ACTIVE").length, color: "text-green-600" },
             { label: "Suspended", value: schools.filter(s => s.status === "SUSPENDED").length, color: "text-red-600" },
             { label: "Total Students", value: schools.reduce((a, s) => a + s.students, 0).toLocaleString(), color: "text-purple-600" },
@@ -130,7 +130,7 @@ export function SchoolsPage() {
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search schools by name or city..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search institutes by name or city..." className="w-full pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
           </div>
           <div className="flex gap-2">
             {[["all", "All"], ["ACTIVE", "Active"], ["SUSPENDED", "Suspended"]].map(([val, label]) => (
@@ -148,7 +148,7 @@ export function SchoolsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
-                  {["School", "Location", "Plan", "Students", "Staff", "Status", "Actions"].map(h => (
+                  {["Institute", "Location", "Plan", "Students", "Staff", "Status", "Actions"].map(h => (
                     <th key={h} className="text-left text-xs font-semibold text-gray-500 px-4 py-3 uppercase">{h}</th>
                   ))}
                 </tr>
@@ -198,7 +198,7 @@ export function SchoolsPage() {
             <Card className="w-[580px] p-6 space-y-5">
               {/* Progress */}
               <div className="flex items-center justify-between mb-1">
-                <h3 className="font-bold text-gray-900 text-lg">Onboard New School</h3>
+                <h3 className="font-bold text-gray-900 text-lg">Onboard New Institute</h3>
                 <button onClick={() => setShowWizard(false)} className="p-1 text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>
               </div>
               <div className="flex items-center gap-0">
@@ -219,7 +219,7 @@ export function SchoolsPage() {
               {wizardStep === 0 && (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
-                    <label className="text-xs text-gray-500 font-medium">School Name *</label>
+                    <label className="text-xs text-gray-500 font-medium">Institute Name *</label>
                     <input value={form.name} onChange={e => upd("name", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="e.g. Greenfield Academy" />
                   </div>
                   <div>
@@ -236,7 +236,7 @@ export function SchoolsPage() {
                   </div>
                   <div className="col-span-2">
                     <label className="text-xs text-gray-500 font-medium">Phone</label>
-                    <input value={form.phone} onChange={e => upd("phone", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="School phone number" />
+                    <input value={form.phone} onChange={e => upd("phone", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Institute phone number" />
                   </div>
                 </div>
               )}
@@ -263,7 +263,7 @@ export function SchoolsPage() {
               {/* Step 2 – Plan */}
               {wizardStep === 2 && (
                 <div className="space-y-3">
-                  <p className="text-sm text-gray-600">Select a subscription plan for this school:</p>
+                  <p className="text-sm text-gray-600">Select a subscription plan for this institute:</p>
                   <div className="grid grid-cols-2 gap-3">
                     {[
                       { plan: "Free", price: "₹0/mo", features: ["Up to 50 students", "Basic fee tracking", "No WhatsApp"] },
@@ -291,7 +291,7 @@ export function SchoolsPage() {
                   <p className="text-sm text-gray-600 font-medium">Review and confirm:</p>
                   <div className="bg-gray-50 rounded-xl divide-y divide-gray-100">
                     {[
-                      ["School Name", form.name || "—"],
+                      ["Institute Name", form.name || "—"],
                       ["Location", `${form.city}${form.state ? ", " + form.state : ""}`],
                       ["Admin Name", form.adminName || "—"],
                       ["Admin Email", form.adminEmail || "—"],
@@ -315,7 +315,7 @@ export function SchoolsPage() {
                 </Button>
                 <Button onClick={() => wizardStep < 3 ? setWizardStep(w => w + 1) : handleOnboard()}
                   disabled={wizardStep === 0 && !form.name}>
-                  {wizardStep < 3 ? "Next →" : "✓ Create School"}
+                  {wizardStep < 3 ? "Next →" : "✓ Create Institute"}
                 </Button>
               </div>
             </Card>
@@ -327,12 +327,12 @@ export function SchoolsPage() {
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <Card className="w-[480px] p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Edit School — {editSchool.name}</h3>
+                <h3 className="font-bold text-gray-900">Edit Institute — {editSchool.name}</h3>
                 <button onClick={() => setEditSchool(null)}><X className="w-5 h-5 text-gray-400 hover:text-gray-700" /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  ["School Name", "name", "text"],
+                  ["Institute Name", "name", "text"],
                   ["City", "city", "text"],
                   ["State", "state", "text"],
                   ["Phone", "phone", "text"],
@@ -370,12 +370,12 @@ export function SchoolsPage() {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">
-                    {confirmAction === "suspend" ? "Suspend School?" : "Activate School?"}
+                    {confirmAction === "suspend" ? "Suspend Institute?" : "Activate Institute?"}
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
                     {confirmAction === "suspend"
-                      ? `This will suspend ${confirmSchool.name}. All users will lose access immediately.`
-                      : `This will reactivate ${confirmSchool.name}. All users will regain access.`}
+                      ? `This will suspend institute ${confirmSchool.name}. All users will lose access immediately.`
+                      : `This will reactivate institute ${confirmSchool.name}. All users will regain access.`}
                   </p>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import { LayoutDashboard, Building2, CreditCard, BarChart3, Settings, Shield, Lo
 
 const nav = [
   { label: "Dashboard", href: "/super-admin/dashboard", icon: LayoutDashboard },
-  { label: "Schools", href: "/super-admin/schools", icon: Building2 },
+  { label: "Institutes", href: "/super-admin/schools", icon: Building2 },
   { label: "Subscriptions", href: "/super-admin/subscriptions", icon: CreditCard },
   { label: "Analytics", href: "/super-admin/analytics", icon: BarChart3 },
   { label: "Audit Logs", href: "/super-admin/audit", icon: FileText },

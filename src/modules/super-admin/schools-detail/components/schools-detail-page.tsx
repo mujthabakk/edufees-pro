@@ -28,7 +28,7 @@ const schoolsData: Record<string, {
     adminEmail: "admin@greenfield.edu", joined: "2023-04-01",
     students: 630, staff: 45, totalFee: 52000000, collected: 44200000, overdue: 3200000,
     users: [
-      { role: "School Admin", count: 2, color: "bg-indigo-100 text-indigo-700", icon: Shield },
+      { role: "Institute Admin", count: 2, color: "bg-indigo-100 text-indigo-700", icon: Shield },
       { role: "Accountant", count: 3, color: "bg-green-100 text-green-700", icon: Briefcase },
       { role: "Teacher", count: 28, color: "bg-orange-100 text-orange-700", icon: BookOpen },
       { role: "Parent", count: 630, color: "bg-blue-100 text-blue-700", icon: UserCheck },
@@ -55,7 +55,7 @@ const schoolsData: Record<string, {
     adminEmail: "principal@sunrise.edu", joined: "2023-09-15",
     students: 310, staff: 22, totalFee: 22000000, collected: 18500000, overdue: 1200000,
     users: [
-      { role: "School Admin", count: 1, color: "bg-indigo-100 text-indigo-700", icon: Shield },
+      { role: "Institute Admin", count: 1, color: "bg-indigo-100 text-indigo-700", icon: Shield },
       { role: "Accountant", count: 2, color: "bg-green-100 text-green-700", icon: Briefcase },
       { role: "Teacher", count: 15, color: "bg-orange-100 text-orange-700", icon: BookOpen },
       { role: "Parent", count: 310, color: "bg-blue-100 text-blue-700", icon: UserCheck },
@@ -81,7 +81,7 @@ const schoolsData: Record<string, {
     adminEmail: "admin@delhimodern.edu", joined: "2022-11-01",
     students: 1240, staff: 98, totalFee: 110000000, collected: 98000000, overdue: 4500000,
     users: [
-      { role: "School Admin", count: 4, color: "bg-indigo-100 text-indigo-700", icon: Shield },
+      { role: "Institute Admin", count: 4, color: "bg-indigo-100 text-indigo-700", icon: Shield },
       { role: "Accountant", count: 8, color: "bg-green-100 text-green-700", icon: Briefcase },
       { role: "Teacher", count: 72, color: "bg-orange-100 text-orange-700", icon: BookOpen },
       { role: "Parent", count: 1240, color: "bg-blue-100 text-blue-700", icon: UserCheck },
@@ -108,7 +108,7 @@ const schoolsData: Record<string, {
     adminEmail: "vidyavihar@gmail.com", joined: "2024-01-10",
     students: 88, staff: 9, totalFee: 4400000, collected: 1200000, overdue: 980000,
     users: [
-      { role: "School Admin", count: 1, color: "bg-indigo-100 text-indigo-700", icon: Shield },
+      { role: "Institute Admin", count: 1, color: "bg-indigo-100 text-indigo-700", icon: Shield },
       { role: "Accountant", count: 1, color: "bg-green-100 text-green-700", icon: Briefcase },
       { role: "Teacher", count: 6, color: "bg-orange-100 text-orange-700", icon: BookOpen },
       { role: "Parent", count: 88, color: "bg-blue-100 text-blue-700", icon: UserCheck },
@@ -132,7 +132,7 @@ const schoolsData: Record<string, {
     adminEmail: "kvandheri@gov.in", joined: "2023-06-20",
     students: 420, staff: 31, totalFee: 30000000, collected: 25600000, overdue: 1800000,
     users: [
-      { role: "School Admin", count: 2, color: "bg-indigo-100 text-indigo-700", icon: Shield },
+      { role: "Institute Admin", count: 2, color: "bg-indigo-100 text-indigo-700", icon: Shield },
       { role: "Accountant", count: 3, color: "bg-green-100 text-green-700", icon: Briefcase },
       { role: "Teacher", count: 22, color: "bg-orange-100 text-orange-700", icon: BookOpen },
       { role: "Parent", count: 420, color: "bg-blue-100 text-blue-700", icon: UserCheck },
@@ -179,7 +179,7 @@ export function SchoolsDetailPage() {
   if (!school) {
     return (
       <div className="flex flex-col flex-1 items-center justify-center p-6">
-        <p className="text-gray-500">School not found.</p>
+        <p className="text-gray-500">Institute not found.</p>
         <Button className="mt-4" onClick={() => router.back()}>Go Back</Button>
       </div>
     );
@@ -191,7 +191,7 @@ export function SchoolsDetailPage() {
   const handleEditSave = () => {
     setSchool((s: any) => ({ ...s, ...editForm }));
     setShowEdit(false);
-    showToast("✅ School details updated successfully");
+    showToast("✅ Institute details updated successfully");
   };
 
   const handleToggleStatus = () => {
@@ -216,7 +216,7 @@ export function SchoolsDetailPage() {
         {/* Back + Actions */}
         <div className="flex items-center justify-between">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900">
-            <ArrowLeft className="w-4 h-4" /> Back to Schools
+            <ArrowLeft className="w-4 h-4" /> Back to Institutes
           </button>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => { showToast("📧 Email sent to " + school.adminEmail); }}>
@@ -410,12 +410,12 @@ export function SchoolsDetailPage() {
           <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <Card className="w-[500px] p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-gray-900">Edit School Details</h3>
+                <h3 className="font-bold text-gray-900">Edit Institute Details</h3>
                 <button onClick={() => setShowEdit(false)}><X className="w-5 h-5 text-gray-400 hover:text-gray-700" /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  ["School Name", "name", "col-span-2"],
+                  ["Institute Name", "name", "col-span-2"],
                   ["City", "city", ""],
                   ["State", "state", ""],
                   ["Address", "address", "col-span-2"],
@@ -446,7 +446,7 @@ export function SchoolsDetailPage() {
                   <AlertTriangle className={`w-5 h-5 ${school.status === "Active" ? "text-red-500" : "text-green-600"}`} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900">{school.status === "Active" ? "Suspend School?" : "Activate School?"}</h3>
+                  <h3 className="font-bold text-gray-900">{school.status === "Active" ? "Suspend Institute?" : "Activate Institute?"}</h3>
                   <p className="text-sm text-gray-500 mt-1">
                     {school.status === "Active"
                       ? `All users of ${school.name} will immediately lose access.`

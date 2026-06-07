@@ -20,6 +20,8 @@ export function PaymentsPage() {
   const [showForm, setShowForm] = useState(false);
   const [search, setSearch] = useState("");
   const [mode, setMode] = useState("All");
+  const [toast, setToast] = useState("");
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
   const filtered = allPayments.filter(p =>
     (p.studentName.toLowerCase().includes(search.toLowerCase()) || p.admissionNo.toLowerCase().includes(search.toLowerCase())) &&
@@ -28,7 +30,8 @@ export function PaymentsPage() {
 
   return (
     <div className="flex flex-col flex-1">
-      <Topbar title="Payments" subtitle="Record and track fee collections" />
+      {toast && <div className="fixed top-5 right-5 z-[999] bg-gray-900 text-white text-sm px-4 py-3 rounded-xl shadow-xl">{toast}</div>}
+      <Topbar title="Payments" subtitle="Record and track fee collections · Greenfield Institute" />
       <main className="flex-1 p-6 space-y-4">
 
         {/* Stats */}
@@ -68,7 +71,7 @@ export function PaymentsPage() {
           >
             {["All", "CASH", "CHEQUE", "NEFT", "UPI", "ONLINE"].map(m => <option key={m}>{m}</option>)}
           </select>
-          <Button variant="outline" size="sm"><Download className="w-4 h-4" />Export</Button>
+          <Button variant="outline" size="sm" onClick={() => showToast("📥 Exporting payment records...")}><Download className="w-4 h-4" />Export</Button>
           <Button size="sm" onClick={() => setShowForm(true)}><Plus className="w-4 h-4" />Record Payment</Button>
         </div>
 
@@ -110,7 +113,7 @@ export function PaymentsPage() {
                   </div>
                 </div>
                 <div className="flex gap-3 pt-2">
-                  <Button className="flex-1" onClick={() => setShowForm(false)}>
+                  <Button className="flex-1" onClick={() => { showToast("✅ Payment recorded & invoice generated"); setShowForm(false); }}>
                     <Receipt className="w-4 h-4" />Record & Generate Invoice
                   </Button>
                   <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>

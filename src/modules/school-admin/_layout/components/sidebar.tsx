@@ -34,7 +34,7 @@ export function Sidebar() {
         </div>
         <div>
           <p className="text-white font-bold text-sm">EduFees Pro</p>
-          <p className="text-gray-400 text-xs">Greenfield Academy</p>
+          <p className="text-gray-400 text-xs">Greenfield Institute</p>
         </div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -54,7 +54,7 @@ export function Sidebar() {
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">SA</div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-xs font-medium truncate">School Admin</p>
+            <p className="text-white text-xs font-medium truncate">Institute Admin</p>
             <p className="text-gray-400 text-xs truncate">admin@greenfield.edu</p>
           </div>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Topbar } from "@/modules/shared/layout/topbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/modules/shared/ui/card";
 import { Button } from "@/modules/shared/ui/button";
@@ -28,9 +29,13 @@ const QUOTA_DATA = [
 ];
 
 export function ReportsPage() {
+  const [toast, setToast] = useState("");
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
+
   return (
     <div className="flex flex-col flex-1">
-      <Topbar title="Reports & Analytics" subtitle="Financial insights for Academic Year 2025-26" />
+      {toast && <div className="fixed top-5 right-5 z-[999] bg-gray-900 text-white text-sm px-4 py-3 rounded-xl shadow-xl">{toast}</div>}
+      <Topbar title="Reports & Analytics" subtitle="Financial insights · Greenfield Institute 2025-26" />
       <main className="flex-1 p-6 space-y-5">
 
         {/* Quick Stats */}
@@ -57,7 +62,7 @@ export function ReportsPage() {
           <Card className="col-span-2">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Monthly Collection Trend</CardTitle>
-              <Button variant="outline" size="sm"><Download className="w-3.5 h-3.5" />Download</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("📥 Downloading report...")}><Download className="w-3.5 h-3.5" />Download</Button>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={220}>
@@ -109,7 +114,7 @@ export function ReportsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle>Class-wise Collection</CardTitle>
-              <Button variant="outline" size="sm"><Download className="w-3.5 h-3.5" />Download</Button>
+              <Button variant="outline" size="sm" onClick={() => showToast("📥 Downloading report...")}><Download className="w-3.5 h-3.5" />Download</Button>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={220}>
@@ -156,7 +161,7 @@ export function ReportsPage() {
                 { name: "Coupon Usage Report", desc: "Discount redemption stats", icon: "🏷️" },
                 { name: "Day Book", desc: "Daily collection ledger", icon: "📓" },
               ].map(report => (
-                <button key={report.name} className="flex flex-col gap-2 p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors text-left group">
+                <button key={report.name} onClick={() => showToast(`📊 Generating "${report.name}"...`)} className="flex flex-col gap-2 p-4 border border-gray-200 rounded-xl hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors text-left group">
                   <span className="text-xl">{report.icon}</span>
                   <div>
                     <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-700">{report.name}</p>

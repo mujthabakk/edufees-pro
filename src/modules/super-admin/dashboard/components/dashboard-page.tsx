@@ -1,14 +1,16 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Topbar } from "@/modules/shared/layout/topbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/modules/shared/ui/card";
 import { Button } from "@/modules/shared/ui/button";
 import { Badge, StatusBadge } from "@/modules/shared/ui/badge";
 import { formatCurrency } from "@/lib/utils";
-import { Building2, Users, IndianRupee, TrendingUp, Plus, Eye, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Building2, Users, IndianRupee, TrendingUp, Plus, Eye, CheckCircle, XCircle, AlertCircle, X } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 
-const schools = [
+const initInstitutes = [
   { id: "1", name: "Greenfield Academy", city: "Bangalore", plan: "GROWTH", students: 1248, collected: 8450000, status: "ACTIVE", joinedAt: "Jan 2025" },
   { id: "2", name: "Sunrise International", city: "Mumbai", plan: "ENTERPRISE", students: 3420, collected: 28000000, status: "ACTIVE", joinedAt: "Feb 2024" },
   { id: "3", name: "Delhi Public School", city: "Delhi", plan: "STARTER", students: 580, collected: 3200000, status: "ACTIVE", joinedAt: "Jun 2025" },
@@ -18,12 +20,12 @@ const schools = [
 ];
 
 const growthData = [
-  { month: "Jan", schools: 180, revenue: 3200000 },
-  { month: "Feb", schools: 196, revenue: 3800000 },
-  { month: "Mar", schools: 210, revenue: 4100000 },
-  { month: "Apr", schools: 225, revenue: 4600000 },
-  { month: "May", schools: 235, revenue: 5200000 },
-  { month: "Jun", schools: 240, revenue: 5800000 },
+  { month: "Jan", institutes: 180, revenue: 3200000 },
+  { month: "Feb", institutes: 196, revenue: 3800000 },
+  { month: "Mar", institutes: 210, revenue: 4100000 },
+  { month: "Apr", institutes: 225, revenue: 4600000 },
+  { month: "May", institutes: 235, revenue: 5200000 },
+  { month: "Jun", institutes: 240, revenue: 5800000 },
 ];
 
 const planColors: Record<string, string> = {
@@ -31,15 +33,30 @@ const planColors: Record<string, string> = {
 };
 
 export function DashboardPage() {
+  const router = useRouter();
+  const [institutes, setInstitutes] = useState(initInstitutes);
+  const [toast, setToast] = useState("");
+  const [confirmInstitute, setConfirmInstitute] = useState<(typeof initInstitutes)[0] | null>(null);
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
+
+  const toggleStatus = () => {
+    if (!confirmInstitute) return;
+    const newStatus = confirmInstitute.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
+    setInstitutes(prev => prev.map(s => s.id === confirmInstitute.id ? { ...s, status: newStatus } : s));
+    showToast(newStatus === "SUSPENDED" ? `⚠️ ${confirmInstitute.name} suspended` : `✅ ${confirmInstitute.name} activated`);
+    setConfirmInstitute(null);
+  };
+
   return (
     <div className="flex flex-col flex-1">
-      <Topbar title="Super Admin Dashboard" subtitle="Platform overview across all schools" />
+      {toast && <div className="fixed top-5 right-5 z-[999] bg-gray-900 text-white text-sm px-4 py-3 rounded-xl shadow-xl">{toast}</div>}
+      <Topbar title="Super Admin Dashboard" subtitle="Platform overview across all institutes" />
       <main className="flex-1 p-6 space-y-5">
 
         {/* Platform Stats */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: "Total Schools", value: "240", change: "+12 this month", icon: Building2, iconBg: "bg-purple-50", iconColor: "text-purple-600" },
+            { label: "Total Institutes", value: institutes.length.toString(), change: "+12 this month", icon: Building2, iconBg: "bg-purple-50", iconColor: "text-purple-600" },
             { label: "Total Students", value: "1,24,816", change: "+2,341 this month", icon: Users, iconBg: "bg-blue-50", iconColor: "text-blue-600" },
             { label: "Platform Revenue", value: formatCurrency(5800000), change: "+18.4% MoM", icon: IndianRupee, iconBg: "bg-green-50", iconColor: "text-green-600" },
             { label: "Avg Collection Rate", value: "86.2%", change: "+1.8% vs last month", icon: TrendingUp, iconBg: "bg-orange-50", iconColor: "text-orange-600" },
@@ -73,7 +90,7 @@ export function DashboardPage() {
                 <span className="text-sm font-semibold text-gray-900">{p.plan}</span>
               </div>
               <p className="text-3xl font-bold text-gray-900">{p.count}</p>
-              <p className="text-xs text-gray-500 mt-1">schools · {p.revenue}</p>
+              <p className="text-xs text-gray-500 mt-1">institutes · {p.revenue}</p>
             </Card>
           ))}
         </div>
@@ -81,7 +98,7 @@ export function DashboardPage() {
         {/* Charts */}
         <div className="grid grid-cols-2 gap-4">
           <Card>
-            <CardHeader><CardTitle>Platform Growth — Schools</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Platform Growth — Institutes</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart data={growthData}>
@@ -89,7 +106,7 @@ export function DashboardPage() {
                   <XAxis dataKey="month" tick={{ fontSize: 12 }} />
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip />
-                  <Line type="monotone" dataKey="schools" name="Schools" stroke="#9333ea" strokeWidth={2.5} dot={{ fill: "#9333ea", r: 4 }} />
+                  <Line type="monotone" dataKey="institutes" name="Institutes" stroke="#9333ea" strokeWidth={2.5} dot={{ fill: "#9333ea", r: 4 }} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -110,24 +127,24 @@ export function DashboardPage() {
           </Card>
         </div>
 
-        {/* Schools Table */}
+        {/* Institutes Table */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>All Schools</CardTitle>
-            <Button size="sm"><Plus className="w-4 h-4" />Onboard School</Button>
+            <CardTitle>All Institutes</CardTitle>
+            <Button size="sm" onClick={() => router.push("/super-admin/schools")}><Plus className="w-4 h-4" />Onboard Institute</Button>
           </CardHeader>
           <CardContent className="p-0">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50/50">
-                  {["School", "City", "Plan", "Students", "Collected", "Status", "Joined", ""].map(h => (
+                  {["Institute", "City", "Plan", "Students", "Collected", "Status", "Joined", ""].map(h => (
                     <th key={h} className="text-left text-xs font-semibold text-gray-500 px-5 py-3 uppercase tracking-wide">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {schools.map((s, i) => (
-                  <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50/70 transition-colors">
+                {institutes.map((s) => (
+                  <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50/70 transition-colors cursor-pointer" onClick={() => router.push(`/super-admin/schools/${s.id}`)}>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-700 text-xs font-bold">
@@ -144,18 +161,18 @@ export function DashboardPage() {
                     <td className="px-5 py-3.5 text-sm font-semibold text-gray-900">{formatCurrency(s.collected)}</td>
                     <td className="px-5 py-3.5"><StatusBadge status={s.status} /></td>
                     <td className="px-5 py-3.5 text-sm text-gray-400">{s.joinedAt}</td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-3.5" onClick={e => e.stopPropagation()}>
                       <div className="flex gap-1">
                         {s.status === "SUSPENDED" ? (
-                          <button className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors" title="Activate">
+                          <button onClick={() => setConfirmInstitute(s)} className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition-colors" title="Activate">
                             <CheckCircle className="w-3.5 h-3.5" />
                           </button>
                         ) : (
-                          <button className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Suspend">
+                          <button onClick={() => setConfirmInstitute(s)} className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" title="Suspend">
                             <XCircle className="w-3.5 h-3.5" />
                           </button>
                         )}
-                        <button className="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded transition-colors">
+                        <button onClick={() => router.push(`/super-admin/schools/${s.id}`)} className="p-1.5 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded transition-colors">
                           <Eye className="w-3.5 h-3.5" />
                         </button>
                       </div>
@@ -166,6 +183,29 @@ export function DashboardPage() {
             </table>
           </CardContent>
         </Card>
+
+        {/* Confirm Suspend / Activate */}
+        {confirmInstitute && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <Card className="w-[400px] p-6 space-y-4">
+              <div className="flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${confirmInstitute.status === "ACTIVE" ? "bg-red-100" : "bg-green-100"}`}>
+                  <AlertCircle className={`w-5 h-5 ${confirmInstitute.status === "ACTIVE" ? "text-red-500" : "text-green-600"}`} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900">{confirmInstitute.status === "ACTIVE" ? "Suspend Institute?" : "Activate Institute?"}</h3>
+                  <p className="text-sm text-gray-500 mt-1">{confirmInstitute.name} — {confirmInstitute.status === "ACTIVE" ? "all users will lose access immediately." : "all users will regain access."}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button variant="outline" onClick={() => setConfirmInstitute(null)}>Cancel</Button>
+                <Button onClick={toggleStatus} className={confirmInstitute.status === "ACTIVE" ? "bg-red-600 hover:bg-red-700 text-white" : "bg-green-600 hover:bg-green-700 text-white"}>
+                  {confirmInstitute.status === "ACTIVE" ? "Yes, Suspend" : "Yes, Activate"}
+                </Button>
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Recent alerts */}
         <Card>

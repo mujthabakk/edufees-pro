@@ -5,12 +5,12 @@ import { TrendingUp, TrendingDown, Users, Building2, CreditCard, Activity } from
 import { AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 const growth = [
-  { month: "Jan", schools: 48, users: 1820, revenue: 185000 },
-  { month: "Feb", schools: 51, users: 1980, revenue: 210000 },
-  { month: "Mar", schools: 53, users: 2100, revenue: 230000 },
-  { month: "Apr", schools: 56, users: 2340, revenue: 258000 },
-  { month: "May", schools: 60, users: 2610, revenue: 285000 },
-  { month: "Jun", schools: 63, users: 2820, revenue: 312000 },
+  { month: "Jan", institutes: 48, users: 1820, revenue: 185000 },
+  { month: "Feb", institutes: 51, users: 1980, revenue: 210000 },
+  { month: "Mar", institutes: 53, users: 2100, revenue: 230000 },
+  { month: "Apr", institutes: 56, users: 2340, revenue: 258000 },
+  { month: "May", institutes: 60, users: 2610, revenue: 285000 },
+  { month: "Jun", institutes: 63, users: 2820, revenue: 312000 },
 ];
 
 const retention = [
@@ -42,7 +42,7 @@ export function AnalyticsPage() {
         {/* KPIs */}
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label: "Total Schools", value: "63", change: "+5 this month", up: true, icon: Building2, color: "bg-purple-50 text-purple-600" },
+            { label: "Total Institutes", value: "63", change: "+5 this month", up: true, icon: Building2, color: "bg-purple-50 text-purple-600" },
             { label: "Total Users", value: "2,820", change: "+210 this month", up: true, icon: Users, color: "bg-indigo-50 text-indigo-600" },
             { label: "Platform MRR", value: "₹3,12,000", change: "+9.5% vs last month", up: true, icon: CreditCard, color: "bg-green-50 text-green-600" },
             { label: "Churn Rate", value: "1.2%", change: "-0.3% vs last month", up: false, icon: Activity, color: "bg-red-50 text-red-600" },
@@ -64,14 +64,14 @@ export function AnalyticsPage() {
 
         {/* Growth Chart */}
         <Card>
-          <CardHeader><CardTitle>Platform Growth (Schools + Users)</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Platform Growth (Institutes + Users)</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={growth}>
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip />
-                <Area type="monotone" dataKey="schools" stroke="#7c3aed" fill="#ede9fe" name="Schools" />
+                <Area type="monotone" dataKey="institutes" stroke="#7c3aed" fill="#ede9fe" name="Institutes" />
                 <Area type="monotone" dataKey="users" stroke="#6366f1" fill="#e0e7ff" name="Users" />
               </AreaChart>
             </ResponsiveContainer>
