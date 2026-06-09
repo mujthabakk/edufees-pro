@@ -1,0 +1,5 @@
+1:"$Sreact.fragment"
+2:I[50792,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js","/edufees-pro/_next/static/chunks/0iqwcgdw5b80p.js"],"StudentNav"]
+3:I[39756,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+4:I[37457,["/edufees-pro/_next/static/chunks/05-c3ty_6dwfk.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
+0:{"rsc":["$","$1","c",{"children":[[["$","script","script-0",{"src":"/edufees-pro/_next/static/chunks/0iqwcgdw5b80p.js","async":true}]],["$","div",null,{"className":"min-h-screen bg-gray-50","children":[["$","$L2",null,{}],["$","main",null,{"className":"max-w-5xl mx-auto px-4 py-4 pb-24 md:pb-8","children":["$","$L3",null,{"parallelRouterKey":"children","template":["$","$L4",null,{}]}]}]]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"4bzXk9CDVpDYlpjnid7aH"}
