@@ -2,16 +2,18 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, CreditCard, FileText, BarChart3, Bell, LogOut, GraduationCap, Phone } from "lucide-react";
+import { LayoutDashboard, Users, CreditCard, FileText, BarChart3, Bell, LogOut, GraduationCap, Phone, Tag, CalendarDays } from "lucide-react";
 
 const nav = [
-  { label: "Dashboard", href: "/accountant/dashboard", icon: LayoutDashboard },
-  { label: "Students", href: "/accountant/students", icon: Users },
-  { label: "Payments", href: "/accountant/payments", icon: CreditCard },
-  { label: "Invoices", href: "/accountant/invoices", icon: FileText },
-  { label: "Reports", href: "/accountant/reports", icon: BarChart3 },
-  { label: "Call Log", href: "/accountant/calls", icon: Phone },
-  { label: "Reminders", href: "/accountant/reminders", icon: Bell },
+  { label: "Dashboard",   href: "/accountant/dashboard", icon: LayoutDashboard },
+  { label: "Students",    href: "/accountant/students",  icon: Users },
+  { label: "Payments",    href: "/accountant/payments",  icon: CreditCard },
+  { label: "Invoices",    href: "/accountant/invoices",  icon: FileText },
+  { label: "Coupons",     href: "/accountant/coupons",   icon: Tag },
+  { label: "Academic",    href: "/accountant/academic",  icon: CalendarDays },
+  { label: "Reports",     href: "/accountant/reports",   icon: BarChart3 },
+  { label: "Call Log",    href: "/accountant/calls",     icon: Phone },
+  { label: "Reminders",   href: "/accountant/reminders", icon: Bell },
 ];
 
 export function Sidebar() {

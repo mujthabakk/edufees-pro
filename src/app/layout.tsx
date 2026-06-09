@@ -7,6 +7,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "EduFees Pro — School Fee Management",
   description: "Multi-tenant school fee management system",
+  manifest: "/edufees-pro/manifest.json",
+  themeColor: "#0d9488",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+  appleWebApp: { capable: true, statusBarStyle: "default", title: "EduFees Pro" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

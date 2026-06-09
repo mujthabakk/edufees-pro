@@ -51,7 +51,7 @@ const ROLES = [
   },
   {
     role: "PARENT",
-    label: "Parent / Student",
+    label: "Parent",
     desc: "View fees, pay online & download invoices",
     icon: User,
     color: "bg-teal-600",
@@ -59,6 +59,17 @@ const ROLES = [
     email: "parent@greenfield.edu",
     password: "Parent@123",
     redirect: "/parent/dashboard",
+  },
+  {
+    role: "STUDENT",
+    label: "Student",
+    desc: "My fee dashboard, invoices & payment history",
+    icon: GraduationCap,
+    color: "bg-violet-600",
+    lightColor: "bg-violet-50 text-violet-700 border-violet-200",
+    email: "student@greenfield.edu",
+    password: "Student@123",
+    redirect: "/student/dashboard",
   },
 ];
 

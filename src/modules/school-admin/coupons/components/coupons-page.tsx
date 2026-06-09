@@ -10,19 +10,17 @@ import { Tag, Plus, Edit2, Trash2, X, AlertTriangle, Copy, ToggleLeft, ToggleRig
 type Coupon = {
   id: string; code: string; discountType: "percent" | "flat";
   amount: number; validFrom: string; validTo: string;
-  maxUses: number; usedCount: number; classes: string[]; active: boolean;
+  maxUses: number; usedCount: number; active: boolean;
 };
 
 const initCoupons: Coupon[] = [
-  { id:"1", code:"EARLY25", discountType:"percent", amount:25, validFrom:"2025-04-01", validTo:"2025-04-30", maxUses:100, usedCount:67, classes:["All Classes"], active:true },
-  { id:"2", code:"STAFF500", discountType:"flat", amount:500, validFrom:"2025-04-01", validTo:"2025-12-31", maxUses:50, usedCount:12, classes:["All Classes"], active:true },
-  { id:"3", code:"NRI10", discountType:"percent", amount:10, validFrom:"2025-01-01", validTo:"2025-12-31", maxUses:200, usedCount:45, classes:["Class 11","Class 12"], active:false },
-  { id:"4", code:"SPORTS1K", discountType:"flat", amount:1000, validFrom:"2025-06-01", validTo:"2025-09-30", maxUses:30, usedCount:8, classes:["Class 9","Class 10"], active:true },
+  { id:"1", code:"EARLY25",  discountType:"percent", amount:25,   validFrom:"2025-04-01", validTo:"2025-04-30", maxUses:100, usedCount:67,  active:true },
+  { id:"2", code:"STAFF500", discountType:"flat",    amount:500,  validFrom:"2025-04-01", validTo:"2025-12-31", maxUses:50,  usedCount:12,  active:true },
+  { id:"3", code:"NRI10",    discountType:"percent", amount:10,   validFrom:"2025-01-01", validTo:"2025-12-31", maxUses:200, usedCount:45,  active:false },
+  { id:"4", code:"SPORTS1K", discountType:"flat",    amount:1000, validFrom:"2025-06-01", validTo:"2025-09-30", maxUses:30,  usedCount:8,   active:true },
 ];
 
-const CLASS_LIST = ["All Classes","Class 6","Class 7","Class 8","Class 9","Class 10","Class 11","Class 12"];
-
-const emptyForm = { code:"", discountType:"percent" as "percent"|"flat", amount:0, validFrom:"", validTo:"", maxUses:100, classes:["All Classes"] };
+const emptyForm = { code:"", discountType:"percent" as "percent"|"flat", amount:0, validFrom:"", validTo:"", maxUses:100 };
 
 export function CouponsPage() {
   const [coupons, setCoupons] = useState<Coupon[]>(initCoupons);
@@ -33,13 +31,7 @@ export function CouponsPage() {
   const [toast, setToast] = useState("");
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
-  const upd = (k: string, v: string | number | string[]) => setForm(f => ({ ...f, [k]: v }));
-
-  const toggleClass = (cls: string) => {
-    if (cls === "All Classes") { upd("classes", ["All Classes"]); return; }
-    const cur = form.classes.filter(c => c !== "All Classes");
-    upd("classes", cur.includes(cls) ? cur.filter(c => c !== cls) : [...cur, cls]);
-  };
+  const upd = (k: string, v: string | number) => setForm(f => ({ ...f, [k]: v }));
 
   const save = () => {
     if (!form.code) { showToast("⚠️ Coupon code is required"); return; }
@@ -56,7 +48,13 @@ export function CouponsPage() {
 
   const openEdit = (c: Coupon) => {
     setEditCoupon(c);
-    setForm({ code: c.code, discountType: c.discountType, amount: c.amount, validFrom: c.validFrom, validTo: c.validTo, maxUses: c.maxUses, classes: c.classes });
+    setForm({ code:c.code, discountType:c.discountType, amount:c.amount, validFrom:c.validFrom, validTo:c.validTo, maxUses:c.maxUses });
+    setShowModal(true);
+  };
+
+  const openCreate = () => {
+    setEditCoupon(null);
+    setForm({ ...emptyForm });
     setShowModal(true);
   };
 
@@ -67,7 +65,7 @@ export function CouponsPage() {
 
   const copyCode = (code: string) => {
     navigator.clipboard?.writeText(code).catch(() => {});
-    showToast(`📋 "${code}" copied to clipboard`);
+    showToast(`📋 "${code}" copied`);
   };
 
   const activeCount = coupons.filter(c => c.active).length;
@@ -81,10 +79,10 @@ export function CouponsPage() {
 
         <div className="grid grid-cols-4 gap-4">
           {[
-            { label:"Total Coupons", value: coupons.length, icon: Tag, bg:"bg-indigo-50", color:"text-indigo-600" },
-            { label:"Active Coupons", value: activeCount, icon: ToggleRight, bg:"bg-green-50", color:"text-green-600" },
-            { label:"Inactive", value: coupons.length - activeCount, icon: ToggleLeft, bg:"bg-gray-100", color:"text-gray-500" },
-            { label:"Total Uses", value: totalUses, icon: Percent, bg:"bg-orange-50", color:"text-orange-600" },
+            { label:"Total Coupons",  value:coupons.length,            icon:Tag,         bg:"bg-indigo-50", color:"text-indigo-600" },
+            { label:"Active Coupons", value:activeCount,               icon:ToggleRight,  bg:"bg-green-50",  color:"text-green-600" },
+            { label:"Inactive",       value:coupons.length-activeCount, icon:ToggleLeft,  bg:"bg-gray-100",  color:"text-gray-500" },
+            { label:"Total Uses",     value:totalUses,                 icon:Percent,      bg:"bg-orange-50", color:"text-orange-600" },
           ].map(k => (
             <Card key={k.label} className="p-5">
               <div className="flex items-center gap-3">
@@ -98,15 +96,13 @@ export function CouponsPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Coupon Codes</CardTitle>
-            <Button size="sm" onClick={() => { setEditCoupon(null); setForm({ ...emptyForm }); setShowModal(true); }}>
-              <Plus className="w-4 h-4" />Create Coupon
-            </Button>
+            <Button size="sm" onClick={openCreate}><Plus className="w-4 h-4" />Create Coupon</Button>
           </CardHeader>
           <CardContent className="p-0">
             <table className="w-full">
               <thead>
                 <tr className="border-b bg-gray-50/50">
-                  {["Code","Type","Discount","Valid Period","Uses","Classes","Status","Actions"].map(h => (
+                  {["Code","Type","Discount","Valid Period","Uses","Status","Actions"].map(h => (
                     <th key={h} className="text-left text-xs font-semibold text-gray-500 px-5 py-3 uppercase">{h}</th>
                   ))}
                 </tr>
@@ -128,13 +124,11 @@ export function CouponsPage() {
                     </td>
                     <td className="px-5 py-3.5 text-xs text-gray-500">{c.validFrom} → {c.validTo}</td>
                     <td className="px-5 py-3.5 text-sm">{c.usedCount} / {c.maxUses}</td>
-                    <td className="px-5 py-3.5 text-xs text-gray-600">{c.classes.join(", ")}</td>
                     <td className="px-5 py-3.5">
                       <button onClick={() => toggleActive(c)}>
                         {c.active
                           ? <span className="text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-full">Active</span>
-                          : <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Inactive</span>
-                        }
+                          : <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">Inactive</span>}
                       </button>
                     </td>
                     <td className="px-5 py-3.5">
@@ -151,56 +145,60 @@ export function CouponsPage() {
         </Card>
       </main>
 
+      {/* ── Create / Edit Modal ── */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <Card className="w-[500px] max-h-[90vh] overflow-y-auto p-6 space-y-4">
+          <Card className="w-[520px] max-h-[90vh] overflow-y-auto p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-gray-900">{editCoupon ? "Edit Coupon" : "Create Coupon"}</h3>
               <button onClick={() => { setShowModal(false); setEditCoupon(null); }}><X className="w-5 h-5 text-gray-400 hover:text-gray-700" /></button>
             </div>
+
             <div className="space-y-3">
               <div>
                 <label className="text-xs text-gray-500 font-medium">Coupon Code *</label>
-                <input value={form.code} onChange={e => upd("code", e.target.value.toUpperCase())} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. EARLY25" />
+                <input value={form.code} onChange={e => upd("code", e.target.value.toUpperCase())}
+                  className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="e.g. BUSROUTE25" />
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-gray-500 font-medium">Discount Type</label>
-                  <select value={form.discountType} onChange={e => upd("discountType", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                  <select value={form.discountType} onChange={e => upd("discountType", e.target.value)}
+                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
                     <option value="percent">Percentage (%)</option>
                     <option value="flat">Flat Amount (₹)</option>
                   </select>
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 font-medium">Amount *</label>
-                  <input type="number" value={form.amount} onChange={e => upd("amount", Number(e.target.value))} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input type="number" value={form.amount} onChange={e => upd("amount", Number(e.target.value))}
+                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-gray-500 font-medium">Valid From</label>
-                  <input type="date" value={form.validFrom} onChange={e => upd("validFrom", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input type="date" value={form.validFrom} onChange={e => upd("validFrom", e.target.value)}
+                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 </div>
                 <div>
                   <label className="text-xs text-gray-500 font-medium">Valid To</label>
-                  <input type="date" value={form.validTo} onChange={e => upd("validTo", e.target.value)} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input type="date" value={form.validTo} onChange={e => upd("validTo", e.target.value)}
+                    className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 </div>
               </div>
+
               <div>
                 <label className="text-xs text-gray-500 font-medium">Max Uses</label>
-                <input type="number" value={form.maxUses} onChange={e => upd("maxUses", Number(e.target.value))} className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                <input type="number" value={form.maxUses} onChange={e => upd("maxUses", Number(e.target.value))}
+                  className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
               </div>
-              <div>
-                <label className="text-xs text-gray-500 font-medium block mb-2">Applicable Classes</label>
-                <div className="flex flex-wrap gap-2">
-                  {CLASS_LIST.map(cls => (
-                    <button key={cls} onClick={() => toggleClass(cls)} className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${form.classes.includes(cls) ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-600 border-gray-200 hover:border-indigo-300"}`}>
-                      {cls}
-                    </button>
-                  ))}
-                </div>
-              </div>
+
             </div>
+
             <div className="flex gap-2 justify-end pt-2 border-t border-gray-100">
               <Button variant="outline" onClick={() => { setShowModal(false); setEditCoupon(null); }}>Cancel</Button>
               <Button onClick={save}>{editCoupon ? "Save Changes" : "Create Coupon"}</Button>
@@ -209,6 +207,7 @@ export function CouponsPage() {
         </div>
       )}
 
+      {/* ── Delete Confirm ── */}
       {deleteCoupon && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <Card className="w-[380px] p-6 space-y-4">
