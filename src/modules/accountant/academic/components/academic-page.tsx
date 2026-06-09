@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import { Topbar } from "@/modules/shared/layout/topbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/modules/shared/ui/card";
 import { Button } from "@/modules/shared/ui/button";
@@ -41,7 +41,7 @@ const STATUS_STYLE: Record<string,string> = {
   upcoming: "bg-blue-100 text-blue-700",
   closed:   "bg-gray-100 text-gray-500",
 };
-const STATUS_ICON: Record<string,JSX.Element> = {
+const STATUS_ICON: Record<string,ReactElement> = {
   active:   <CheckCircle className="w-3 h-3" />,
   upcoming: <Clock className="w-3 h-3" />,
   closed:   <CheckCircle className="w-3 h-3 opacity-40" />,
