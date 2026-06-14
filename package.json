@@ -2,43 +2,23 @@
   "name": "edufees-pro",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mujthabakk.github.io/edufees-pro",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "deploy": "next build && gh-pages -d out --dotfiles --nojekyll"
-  },
-  "dependencies": {
-    "@prisma/client": "^7.8.0",
-    "@radix-ui/react-avatar": "^1.1.11",
-    "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-dropdown-menu": "^2.1.16",
-    "@radix-ui/react-progress": "^1.1.8",
-    "@radix-ui/react-select": "^2.2.6",
-    "@radix-ui/react-separator": "^1.1.8",
-    "@radix-ui/react-tabs": "^1.1.13",
-    "clsx": "^2.1.1",
-    "date-fns": "^4.4.0",
-    "lucide-react": "^1.17.0",
-    "next": "16.2.7",
-    "prisma": "^7.8.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "recharts": "^3.8.1",
-    "tailwind-merge": "^3.6.0",
-    "xlsx": "^0.18.5"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.7",
-    "gh-pages": "^6.3.0",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "dev:web": "npm run dev --workspace @edufees/web",
+    "dev:api": "npm run start:dev --workspace @edufees/api",
+    "build": "npm run build:shared && npm run build:api && npm run build:web",
+    "build:shared": "npm run build --workspace @edufees/shared-types",
+    "build:web": "npm run build --workspace @edufees/web",
+    "build:api": "npm run build --workspace @edufees/api",
+    "lint": "npm run lint:web && npm run lint:api",
+    "lint:web": "npm run lint --workspace @edufees/web",
+    "lint:api": "npm run lint --workspace @edufees/api",
+    "deploy:web": "npm run deploy --workspace @edufees/web",
+    "db:generate": "npm run db:generate --workspace @edufees/api",
+    "db:migrate": "npm run db:migrate --workspace @edufees/api",
+    "db:seed": "npm run db:seed --workspace @edufees/api"
   }
 }

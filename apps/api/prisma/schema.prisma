@@ -1,0 +1,655 @@
+// EduFees Pro — Prisma Schema
+// Stack: NestJS 11 + Prisma 7 (driver adapters) + PostgreSQL 16
+// Connection URLs live in prisma.config.ts (CLI/migrations) and the
+// PrismaPg adapter in PrismaService (runtime) — Prisma 7 no longer
+// accepts url/directUrl inside the datasource block.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum UserRole {
+  SUPER_ADMIN
+  SCHOOL_ADMIN
+  ACCOUNTANT
+  TEACHER
+  PARENT
+}
+
+enum SchoolType {
+  PRIMARY
+  SECONDARY
+  COLLEGE
+  OTHER
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  GROWTH
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  TRIAL
+}
+
+enum FeeFrequency {
+  ONE_TIME
+  MONTHLY
+  QUARTERLY
+  HALF_YEARLY
+  ANNUAL
+}
+
+enum DiscountType {
+  FLAT
+  PERCENTAGE
+}
+
+enum PaymentMode {
+  CASH
+  CHEQUE
+  NEFT
+  BANK_TRANSFER
+  ONLINE
+  UPI
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  PARTIAL
+  PAID
+  OVERDUE
+}
+
+enum NotificationChannel {
+  WHATSAPP
+  EMAIL
+  BOTH
+}
+
+enum NotificationStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum AccountType {
+  CURRENT
+  SAVINGS
+}
+
+enum PaymentGateway {
+  RAZORPAY
+  PAYU
+  STRIPE
+  MANUAL
+}
+
+// ─────────────────────────────────────────────
+// TENANT (SCHOOL)
+// ─────────────────────────────────────────────
+
+model School {
+  id                String             @id @default(cuid())
+  name              String
+  slug              String             @unique // used as tenant identifier
+  logoUrl           String?
+  schoolType        SchoolType
+  affiliationBoard  String?
+  addressLine1      String
+  addressLine2      String?
+  city              String
+  state             String
+  pinCode           String
+  country           String             @default("India")
+  primaryEmail      String
+  secondaryEmail    String?
+  primaryPhone      String
+  secondaryPhone    String?
+  website           String?
+  academicYearStart Int                // month number: 4=April, 6=June
+  currency          String             @default("INR")
+  themeColor        String?
+  isActive          Boolean            @default(true)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  bankDetail        SchoolBankDetail?
+  subscription      SchoolSubscription?
+  users             User[]
+  academicYears     AcademicYear[]
+  classes           Class[]
+  divisions         Division[]
+  batches           Batch[]
+  quotas            Quota[]
+  feeTypes          FeeType[]
+  feeStructures     FeeStructure[]
+  students          Student[]
+  coupons           CouponCode[]
+  payments          Payment[]
+  invoices          Invoice[]
+  notifications     NotificationLog[]
+  auditLogs         AuditLog[]
+
+  @@map("schools")
+}
+
+model SchoolBankDetail {
+  id                  String         @id @default(cuid())
+  schoolId            String         @unique
+  school              School         @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  accountHolderName   String
+  bankName            String
+  accountNumber       String         // store encrypted
+  ifscCode            String
+  branchName          String?
+  accountType         AccountType
+  upiId               String?
+  paymentGateway      PaymentGateway @default(MANUAL)
+  gatewayApiKey       String?        // store encrypted
+  gatewaySecret       String?        // store encrypted
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@map("school_bank_details")
+}
+
+// ─────────────────────────────────────────────
+// SUBSCRIPTION
+// ─────────────────────────────────────────────
+
+model SchoolSubscription {
+  id          String             @id @default(cuid())
+  schoolId    String             @unique
+  school      School             @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  plan        SubscriptionPlan   @default(FREE)
+  status      SubscriptionStatus @default(TRIAL)
+  startDate   DateTime
+  endDate     DateTime
+  studentLimit Int               @default(50)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@map("school_subscriptions")
+}
+
+// ─────────────────────────────────────────────
+// USERS & AUTH
+// ─────────────────────────────────────────────
+
+model User {
+  id                  String    @id @default(cuid())
+  schoolId            String?   // null for SUPER_ADMIN
+  school              School?   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  role                UserRole
+  email               String    @unique
+  username            String    @unique
+  passwordHash        String
+  mustChangePassword  Boolean   @default(false)
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginAt         DateTime?
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  // Relations
+  student             Student?  // for PARENT/STUDENT role
+  teacherClass        TeacherClassAssignment[]
+  payments            Payment[]  @relation("RecordedBy")
+  callLogs            CallLog[]  @relation("MadeBy")
+  auditLogs           AuditLog[] @relation("PerformedBy")
+
+  @@index([schoolId])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// ACADEMIC STRUCTURE
+// ─────────────────────────────────────────────
+
+model AcademicYear {
+  id         String    @id @default(cuid())
+  schoolId   String
+  school     School    @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  label      String    // e.g. "2025-26"
+  startDate  DateTime
+  endDate    DateTime
+  isCurrent  Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+
+  feeStructures FeeStructure[]
+  students      Student[]
+
+  @@unique([schoolId, label])
+  @@index([schoolId])
+  @@map("academic_years")
+}
+
+model Class {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name      String   // "Class 1", "LKG", "Grade 10"
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  divisions     Division[]
+  feeStructures FeeStructure[]
+  students      Student[]
+
+  @@unique([schoolId, name])
+  @@index([schoolId])
+  @@map("classes")
+}
+
+model Division {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  name      String   // "A", "B", "Red"
+  createdAt DateTime @default(now())
+
+  teachers  TeacherClassAssignment[]
+  students  Student[]
+
+  @@unique([classId, name])
+  @@index([schoolId])
+  @@map("divisions")
+}
+
+model Batch {
+  id        String   @id @default(cuid())
+  schoolId  String
+  school    School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name      String   // "Morning Batch", "Evening Batch"
+  createdAt DateTime @default(now())
+
+  students  Student[]
+
+  @@unique([schoolId, name])
+  @@map("batches")
+}
+
+model Quota {
+  id          String   @id @default(cuid())
+  schoolId    String
+  school      School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name        String   // "General", "SC/ST", "Sports", "Scholarship", "Management"
+  description String?
+  createdAt   DateTime @default(now())
+
+  feeStructures FeeStructure[]
+  students      Student[]
+
+  @@unique([schoolId, name])
+  @@map("quotas")
+}
+
+model TeacherClassAssignment {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  divisionId String
+  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, divisionId])
+  @@map("teacher_class_assignments")
+}
+
+// ─────────────────────────────────────────────
+// STUDENTS
+// ─────────────────────────────────────────────
+
+model Student {
+  id               String   @id @default(cuid())
+  schoolId         String
+  school           School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  userId           String   @unique  // linked User account (parent/student login)
+  user             User     @relation(fields: [userId], references: [id])
+  academicYearId   String
+  academicYear     AcademicYear @relation(fields: [academicYearId], references: [id])
+  classId          String
+  class            Class    @relation(fields: [classId], references: [id])
+  divisionId       String?
+  division         Division? @relation(fields: [divisionId], references: [id])
+  batchId          String?
+  batch            Batch?   @relation(fields: [batchId], references: [id])
+  quotaId          String?
+  quota            Quota?   @relation(fields: [quotaId], references: [id])
+
+  // Profile
+  fullName         String
+  admissionNo      String
+  dateOfBirth      DateTime?
+  gender           Gender?
+  photoUrl         String?
+  rollNo           String?
+
+  // Contact
+  parentMobile     String
+  parentEmail      String?
+  whatsappNumber   String?
+  alternatePhone   String?
+
+  // Parent info
+  fatherName       String?
+  motherName       String?
+  guardianName     String?
+  guardianRelation String?
+
+  // Address
+  addressLine1     String?
+  addressLine2     String?
+  city             String?
+  state            String?
+  pinCode          String?
+
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  feeAssignments   StudentFeeAssignment[]
+  payments         Payment[]
+  invoices         Invoice[]
+  callLogs         CallLog[]
+  couponRedemptions CouponRedemption[]
+
+  @@unique([schoolId, admissionNo])
+  @@index([schoolId])
+  @@index([schoolId, classId])
+  @@map("students")
+}
+
+// ─────────────────────────────────────────────
+// FEE STRUCTURE
+// ─────────────────────────────────────────────
+
+model FeeType {
+  id          String       @id @default(cuid())
+  schoolId    String
+  school      School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name        String       // "Tuition Fee", "Transport Fee", custom names
+  description String?
+  isCustom    Boolean      @default(false)
+  isLateFee   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+
+  feeStructures FeeStructure[]
+
+  @@unique([schoolId, name])
+  @@index([schoolId])
+  @@map("fee_types")
+}
+
+model FeeStructure {
+  id             String       @id @default(cuid())
+  schoolId       String
+  school         School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  classId        String
+  class          Class        @relation(fields: [classId], references: [id])
+  quotaId        String?      // null = applies to all quotas unless overridden
+  quota          Quota?       @relation(fields: [quotaId], references: [id])
+  feeTypeId      String
+  feeType        FeeType      @relation(fields: [feeTypeId], references: [id])
+
+  amount         Decimal      @db.Decimal(10, 2)
+  frequency      FeeFrequency
+  dueDay         Int?         // day of month when fee is due
+  isOptional     Boolean      @default(false)
+  isRefundable   Boolean      @default(true)
+  lateFeeAmount  Decimal?     @db.Decimal(10, 2)
+  lateFeePercent Decimal?     @db.Decimal(5, 2)
+  gracePeriodDays Int?
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  assignments    StudentFeeAssignment[]
+
+  @@index([schoolId, academicYearId, classId])
+  @@map("fee_structures")
+}
+
+// ─────────────────────────────────────────────
+// FEE ASSIGNMENT & PAYMENTS
+// ─────────────────────────────────────────────
+
+model StudentFeeAssignment {
+  id              String        @id @default(cuid())
+  studentId       String
+  student         Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  feeStructureId  String
+  feeStructure    FeeStructure  @relation(fields: [feeStructureId], references: [id])
+
+  grossAmount     Decimal       @db.Decimal(10, 2)
+  discountAmount  Decimal       @db.Decimal(10, 2) @default(0)
+  concessionNote  String?
+  netAmount       Decimal       @db.Decimal(10, 2)
+  paidAmount      Decimal       @db.Decimal(10, 2) @default(0)
+  dueDate         DateTime
+  status          PaymentStatus @default(PENDING)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  installments    PaymentInstallment[]
+  payments        Payment[]
+
+  @@index([studentId])
+  @@map("student_fee_assignments")
+}
+
+model PaymentInstallment {
+  id           String               @id @default(cuid())
+  assignmentId String
+  assignment   StudentFeeAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  installmentNo Int
+  amount       Decimal              @db.Decimal(10, 2)
+  dueDate      DateTime
+  paidDate     DateTime?
+  status       PaymentStatus        @default(PENDING)
+  createdAt    DateTime             @default(now())
+
+  @@index([assignmentId])
+  @@map("payment_installments")
+}
+
+model Payment {
+  id              String               @id @default(cuid())
+  schoolId        String
+  school          School               @relation(fields: [schoolId], references: [id])
+  studentId       String
+  student         Student              @relation(fields: [studentId], references: [id])
+  assignmentId    String?
+  assignment      StudentFeeAssignment? @relation(fields: [assignmentId], references: [id])
+  recordedById    String
+  recordedBy      User                 @relation("RecordedBy", fields: [recordedById], references: [id])
+
+  amount          Decimal              @db.Decimal(10, 2)
+  paymentMode     PaymentMode
+  referenceNo     String?              // cheque no, transaction ID
+  paymentDate     DateTime
+  notes           String?
+  isOnline        Boolean              @default(false)
+  gatewayOrderId  String?
+  gatewayPaymentId String?
+
+  invoice         Invoice?
+
+  createdAt       DateTime             @default(now())
+
+  @@index([schoolId])
+  @@index([studentId])
+  @@map("payments")
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  schoolId      String
+  school        School    @relation(fields: [schoolId], references: [id])
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id])
+  paymentId     String    @unique
+  payment       Payment   @relation(fields: [paymentId], references: [id])
+
+  invoiceNo     String    @unique  // sequential, e.g. "INV-2025-001"
+  pdfUrl        String?
+  sentViaEmail  Boolean   @default(false)
+  sentViaWA     Boolean   @default(false)
+
+  createdAt     DateTime  @default(now())
+
+  @@index([schoolId])
+  @@index([studentId])
+  @@map("invoices")
+}
+
+// ─────────────────────────────────────────────
+// COUPON CODES
+// ─────────────────────────────────────────────
+
+model CouponCode {
+  id              String       @id @default(cuid())
+  schoolId        String
+  school          School       @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  code            String
+  discountType    DiscountType
+  discountValue   Decimal      @db.Decimal(10, 2)
+  applicableFees  String[]     // fee type IDs, empty = all
+  validFrom       DateTime
+  validUntil      DateTime
+  maxUses         Int?
+  perStudentLimit Int          @default(1)
+  isActive        Boolean      @default(true)
+  totalRedeemed   Int          @default(0)
+  createdAt       DateTime     @default(now())
+
+  assignedStudents CouponStudentAssignment[]
+  redemptions      CouponRedemption[]
+
+  @@unique([schoolId, code])
+  @@index([schoolId])
+  @@map("coupon_codes")
+}
+
+model CouponStudentAssignment {
+  id        String     @id @default(cuid())
+  couponId  String
+  coupon    CouponCode @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  studentId String
+
+  @@unique([couponId, studentId])
+  @@map("coupon_student_assignments")
+}
+
+model CouponRedemption {
+  id          String     @id @default(cuid())
+  couponId    String
+  coupon      CouponCode @relation(fields: [couponId], references: [id])
+  studentId   String
+  student     Student    @relation(fields: [studentId], references: [id])
+  discountAmt Decimal    @db.Decimal(10, 2)
+  redeemedAt  DateTime   @default(now())
+
+  @@index([couponId])
+  @@map("coupon_redemptions")
+}
+
+// ─────────────────────────────────────────────
+// NOTIFICATIONS & COMMUNICATION
+// ─────────────────────────────────────────────
+
+model NotificationLog {
+  id        String              @id @default(cuid())
+  schoolId  String
+  school    School              @relation(fields: [schoolId], references: [id])
+  studentId String?
+  channel   NotificationChannel
+  template  String              // e.g. "PAYMENT_CONFIRMATION"
+  recipient String              // phone or email
+  message   String
+  status    NotificationStatus  @default(SENT)
+  sentAt    DateTime            @default(now())
+  metadata  Json?               // gateway response, message ID
+
+  @@index([schoolId])
+  @@index([studentId])
+  @@map("notification_logs")
+}
+
+model CallLog {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id])
+  madeById    String
+  madeBy      User     @relation("MadeBy", fields: [madeById], references: [id])
+  calledAt    DateTime
+  duration    Int?     // seconds
+  summary     String?
+  nextAction  String?
+  createdAt   DateTime @default(now())
+
+  @@index([studentId])
+  @@map("call_logs")
+}
+
+// ─────────────────────────────────────────────
+// AUDIT LOG
+// ─────────────────────────────────────────────
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  schoolId    String?
+  school      School?  @relation(fields: [schoolId], references: [id])
+  performedById String
+  performedBy User     @relation("PerformedBy", fields: [performedById], references: [id])
+  action      String   // e.g. "PAYMENT_RECORDED", "FEE_MODIFIED", "COUPON_APPLIED"
+  entityType  String   // e.g. "Payment", "Student", "FeeStructure"
+  entityId    String
+  before      Json?
+  after       Json?
+  ipAddress   String?
+  createdAt   DateTime @default(now())
+
+  @@index([schoolId])
+  @@index([performedById])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+model PlatformConfig {
+  id        String   @id @default("default")
+  config    Json
+  updatedAt DateTime @updatedAt
+
+  @@map("platform_config")
+}

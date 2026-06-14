@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #f9fafb;
+  color: #111827;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile: tables in cards scroll horizontally instead of breaking the page */
+@media (max-width: 767px) {
+  main { padding: 1rem !important; }
+}
+
+/* iOS PWA safe area for fixed bottom nav */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
