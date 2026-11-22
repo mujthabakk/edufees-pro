@@ -1,7 +1,7 @@
 {
   "name": "EduFees Pro",
   "short_name": "EduFees",
-  "description": "School Fee Management — Student & Parent Portal",
+  "description": "School Fee Management — Student Portal",
   "start_url": "/edufees-pro/student/dashboard/",
   "scope": "/edufees-pro/",
   "display": "standalone",

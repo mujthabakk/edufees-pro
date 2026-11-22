@@ -1,5 +1,5 @@
 const CACHE = "edufees-v1";
-const OFFLINE = ["/edufees-pro/parent/dashboard/"];
+const OFFLINE = ["/edufees-pro/student/dashboard/"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(OFFLINE)));
