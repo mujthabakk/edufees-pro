@@ -1,4 +1,4 @@
 1:"$Sreact.fragment"
 2:I[39756,["/edufees-pro/_next/static/chunks/1dgsy8oclc607.js","/edufees-pro/_next/static/chunks/033oenun0-436.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
 3:I[37457,["/edufees-pro/_next/static/chunks/1dgsy8oclc607.js","/edufees-pro/_next/static/chunks/033oenun0-436.js","/edufees-pro/_next/static/chunks/1-8s9_t85wwr4.js"],"default"]
-0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"jFjQDuTUa0F1Gna8rAV1J"}
+0:{"rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"-SFxplhlNSTtezKQiX7pl"}
